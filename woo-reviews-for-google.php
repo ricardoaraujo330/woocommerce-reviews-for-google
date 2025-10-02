@@ -14,8 +14,12 @@ add_action('wp_footer','google_customer_review');
 add_action('admin_menu','gcr_plugin_admin_add_page');
 
 function google_customer_review() {
-        $showBadgeOption = get_option( 'icr-showBadge' ) ? get_option( 'icr-showBadge' ) : '';
-        $showBadge       = ! empty( $showBadgeOption );
+        $showBadgeOption  = get_option( 'icr-showBadge' ) ? get_option( 'icr-showBadge' ) : '';
+        $showBadge        = ! empty( $showBadgeOption );
+        $badgePositionOpt = get_option( 'icr-badge-position' ) ? get_option( 'icr-badge-position' ) : '';
+        $badgePosition    = $badgePositionOpt ? strtoupper( $badgePositionOpt ) : 'BOTTOM_RIGHT';
+        $badgeLocaleOpt   = get_option( 'icr-badge-locale' ) ? get_option( 'icr-badge-locale' ) : '';
+        $badgeLocale      = $badgeLocaleOpt ? $badgeLocaleOpt : str_replace( '_', '-', get_locale() );
         $merchantIdOption = get_option( 'icr-merchantId' ) ? get_option( 'icr-merchantId' ) : '';
         $merchantId      = $merchantIdOption ? absint( $merchantIdOption ) : 0;
         $opt_in_style    = get_option( 'icr-opt-in-style' ) ? get_option( 'icr-opt-in-style' ) : 'CENTER_DIALOG';
@@ -157,7 +161,11 @@ function google_customer_review() {
                         var ratingBadgeContainer = document.createElement("div");
                         document.body.appendChild(ratingBadgeContainer);
                         window.gapi.load('ratingbadge', function() {
-                          window.gapi.ratingbadge.render(ratingBadgeContainer, {"merchant_id": <?php echo (int) $merchantId; ?>});
+                          window.gapi.ratingbadge.render(ratingBadgeContainer, {
+                                  "merchant_id": <?php echo (int) $merchantId; ?>,
+                                  "position": <?php echo wp_json_encode( $badgePosition ); ?>,
+                                  "locale": <?php echo wp_json_encode( $badgeLocale ); ?>
+                          });
                         });
                   }
                 </script>
@@ -292,6 +300,14 @@ function gcr_options_page() {
                         }
                         update_option( 'icr-opt-in-style', $submitted_style );
                 }
+                if(isset($_POST['icr-badge-position'])){
+                        $allowed_positions = array( 'BOTTOM_RIGHT', 'BOTTOM_LEFT', 'INLINE' );
+                        $badge_position = strtoupper( sanitize_text_field( wp_unslash( $_POST['icr-badge-position'] ) ) );
+                        if ( ! in_array( $badge_position, $allowed_positions, true ) ) {
+                                $badge_position = 'BOTTOM_RIGHT';
+                        }
+                        update_option( 'icr-badge-position', $badge_position );
+                }
                 if(isset($_POST['icr-language-code'])){
                         $language_code = sanitize_text_field( wp_unslash( $_POST['icr-language-code'] ) );
                         $language_code = str_replace( '_', '-', $language_code );
@@ -303,6 +319,11 @@ function gcr_options_page() {
                         }
                         update_option( 'icr-language-code', $language_code );
                 }
+                if(isset($_POST['icr-badge-locale'])){
+                        $badge_locale = sanitize_text_field( wp_unslash( $_POST['icr-badge-locale'] ) );
+                        $badge_locale = str_replace( ' ', '', $badge_locale );
+                        update_option( 'icr-badge-locale', $badge_locale );
+                }
 
                 $merchantId = get_option( 'icr-merchantId' ) ? get_option( 'icr-merchantId' ) : '';
                 $showBadge = get_option( 'icr-showBadge' ) ? get_option( 'icr-showBadge' ) : '';
@@ -310,6 +331,8 @@ function gcr_options_page() {
                 $afterTimeDays = get_option( 'icr-afterTimeDays' ) ? get_option( 'icr-afterTimeDays' ) : '2';
                 $optInStyle = get_option( 'icr-opt-in-style' ) ? get_option( 'icr-opt-in-style' ) : 'CENTER_DIALOG';
                 $languageCode = get_option( 'icr-language-code' ) ? get_option( 'icr-language-code' ) : str_replace( '_', '-', get_locale() );
+                $badgePosition = get_option( 'icr-badge-position' ) ? get_option( 'icr-badge-position' ) : 'BOTTOM_RIGHT';
+                $badgeLocale = get_option( 'icr-badge-locale' ) ? get_option( 'icr-badge-locale' ) : str_replace( '_', '-', get_locale() );
 		
 		?>
 	<div class="wrap">
@@ -379,6 +402,40 @@ function gcr_options_page() {
                                           <td>
                                                   <input type="text" name="icr-language-code" value="<?php echo esc_attr( $languageCode ); ?>" class="regular-text" />
                                                   <p class="description"><?php echo __( 'Use a supported locale such as en-US or pt-BR.', 'woo-rfg' ); ?></p>
+                                          </td>
+                                  </tr>
+                                  <tr>
+                                          <th>
+                                                  <?php echo __( 'Badge position', 'woo-rfg' ); ?>:
+                                          </th>
+                                          <td>
+                                                  <select name="icr-badge-position">
+                                                          <?php
+                                                          $badge_positions = array(
+                                                                  'BOTTOM_RIGHT' => __( 'Bottom right', 'woo-rfg' ),
+                                                                  'BOTTOM_LEFT'  => __( 'Bottom left', 'woo-rfg' ),
+                                                                  'INLINE'       => __( 'Inline', 'woo-rfg' ),
+                                                          );
+                                                          foreach ( $badge_positions as $position_key => $position_label ) {
+                                                                  printf(
+                                                                          '<option value="%1$s" %3$s>%2$s</option>',
+                                                                          esc_attr( $position_key ),
+                                                                          esc_html( $position_label ),
+                                                                          selected( $badgePosition, $position_key, false )
+                                                                  );
+                                                          }
+                                                          ?>
+                                                  </select>
+                                                  <p class="description"><?php echo __( 'Choose where the Google rating badge appears.', 'woo-rfg' ); ?></p>
+                                          </td>
+                                  </tr>
+                                  <tr>
+                                          <th>
+                                                  <?php echo __( 'Badge locale', 'woo-rfg' ); ?>:
+                                          </th>
+                                          <td>
+                                                  <input type="text" name="icr-badge-locale" value="<?php echo esc_attr( $badgeLocale ); ?>" class="regular-text" />
+                                                  <p class="description"><?php echo __( 'Use a supported locale such as en-US or pt-BR for the badge.', 'woo-rfg' ); ?></p>
                                           </td>
                                   </tr>
                                   <tr>
