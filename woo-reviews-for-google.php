@@ -1,10 +1,10 @@
 <?php
 /**
  * Plugin Name:  Woo Reviews for Google
- * Plugin URI:   http://icreator.nl
+ * Plugin URI:   https://github.com/ricardoaraujo330
  * Description:  A Plugin to activate Google Customer Reviews in your Woocommerce store.
- * Author:       ICREATOR
- * Author URI:   http://icreator.nl
+ * Author:       ricardoaraujo330
+ * Author URI:   https://github.com/ricardoaraujo330
  * Version:      1.0
  * License:      GPLv2 or later
  * Text Domain:  woo-rfg

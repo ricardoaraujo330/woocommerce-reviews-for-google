@@ -1,6 +1,6 @@
 === Woo reviews for Google  ===
-Contributors: icreator
-Donate link: http://icreator.nl/donate
+Contributors: ricardoaraujo330
+Donate link: https://github.com/ricardoaraujo330
 Tags:  woocommerce, google reviews, google customer reviews
 Requires at least: 3.5
 Tested up to: 4.7
