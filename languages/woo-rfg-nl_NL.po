@@ -4,7 +4,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-12-13 13:18+0000\n"
 "PO-Revision-Date: 2016-12-13 13:19+0000\n"
-"Last-Translator: info@icreator.nl <julian@icreator.nl>\n"
+"Last-Translator: ricardoaraujo330 <https://github.com/ricardoaraujo330>\n"
 "Language-Team: Dutch\n"
 "Language: nl-NL\n"
 "Plural-Forms: nplurals=2; plural=n != 1\n"
@@ -68,9 +68,9 @@ msgstr ""
 
 #. URI of the plugin
 #. Author URI of the plugin
-msgid "http://icreator.nl"
-msgstr "http://icreator.nl"
+msgid "https://github.com/ricardoaraujo330"
+msgstr "https://github.com/ricardoaraujo330"
 
 #. Author of the plugin
-msgid "ICREATOR"
-msgstr "ICREATOR"
+msgid "ricardoaraujo330"
+msgstr "ricardoaraujo330"

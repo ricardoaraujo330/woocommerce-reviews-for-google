@@ -68,9 +68,9 @@ msgstr ""
 
 #. URI of the plugin
 #. Author URI of the plugin
-msgid "http://icreator.nl"
+msgid "https://github.com/ricardoaraujo330"
 msgstr ""
 
 #. Author of the plugin
-msgid "ICREATOR"
+msgid "ricardoaraujo330"
 msgstr ""
